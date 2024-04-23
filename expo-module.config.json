@@ -1,0 +1,9 @@
+{
+  "platforms": ["ios", "tvos", "android", "web"],
+  "ios": {
+    "modules": ["ExpoToopInfoModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.toopinfo.ExpoToopInfoModule"]
+  }
+}

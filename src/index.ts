@@ -20,7 +20,7 @@ export function getSerialNumber(): string {
   return returnResponse(ExpoToopInfoModule.getSerialNumber());
 }
 
-export function getInstalledPackages(): string {
+export function getInstalledPackages(): string[] {
   return returnResponse(ExpoToopInfoModule.getInstalledPackages());
 }
 

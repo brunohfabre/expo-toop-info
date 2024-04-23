@@ -1,5 +1,16 @@
 package expo.modules.toopinfo
 
+import android.os.Build
+import android.content.Intent
+import android.app.Activity
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.util.Base64
+import java.io.ByteArrayOutputStream
+import android.content.Context
+import android.telephony.TelephonyManager
+import android.content.pm.PackageManager
+
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 

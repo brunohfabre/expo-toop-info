@@ -1,26 +1,33 @@
-import { NativeModulesProxy, EventEmitter, Subscription } from 'expo-modules-core';
+import ExpoToopInfoModule from "./ExpoToopInfoModule";
 
-// Import the native module. On web, it will be resolved to ExpoToopInfo.web.ts
-// and on native platforms to ExpoToopInfo.ts
-import ExpoToopInfoModule from './ExpoToopInfoModule';
-import ExpoToopInfoView from './ExpoToopInfoView';
-import { ChangeEventPayload, ExpoToopInfoViewProps } from './ExpoToopInfo.types';
+function returnResponse(result: any): any {
+  if (result === 'not-permitted') {
+    throw new Error('toop-info-not-permitted-error')
+  }
 
-// Get the native constant value.
-export const PI = ExpoToopInfoModule.PI;
-
-export function hello(): string {
-  return ExpoToopInfoModule.hello();
+  return result
 }
 
-export async function setValueAsync(value: string) {
-  return await ExpoToopInfoModule.setValueAsync(value);
+export function openedByDpc(): string {
+  return returnResponse(ExpoToopInfoModule.openedByDpc());
 }
 
-const emitter = new EventEmitter(ExpoToopInfoModule ?? NativeModulesProxy.ExpoToopInfo);
-
-export function addChangeListener(listener: (event: ChangeEventPayload) => void): Subscription {
-  return emitter.addListener<ChangeEventPayload>('onChange', listener);
+export function getImei(): string {
+  return returnResponse(ExpoToopInfoModule.getImei());
 }
 
-export { ExpoToopInfoView, ExpoToopInfoViewProps, ChangeEventPayload };
+export function getSerialNumber(): string {
+  return returnResponse(ExpoToopInfoModule.getSerialNumber());
+}
+
+export function getInstalledPackages(): string {
+  return returnResponse(ExpoToopInfoModule.getInstalledPackages());
+}
+
+export function sendActivityResultOk(): string {
+  return returnResponse(ExpoToopInfoModule.sendActivityResultOk());
+}
+
+export function launchApplication(packageName: string): string {
+  return returnResponse(ExpoToopInfoModule.launchApplication(packageName));
+}

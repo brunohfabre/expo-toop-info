@@ -74,6 +74,6 @@ export function getDeviceId(): string {
   return returnResponse(ExpoToopInfoModule.getDeviceId());
 }
 
-// export function setWallpaper(uri: string): string {
-//   return returnResponse(ExpoToopInfoModule.setWallpaper(uri));
-// }
+export function setWallpaper(uri: string): string {
+  return returnResponse(ExpoToopInfoModule.setWallpaper(uri));
+}

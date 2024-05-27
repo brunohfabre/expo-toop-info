@@ -19,6 +19,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.LayerDrawable
 import android.app.WallpaperManager
 import android.graphics.ImageDecoder
+import android.graphics.BitmapFactory
 
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
@@ -179,15 +180,19 @@ class ExpoToopInfoModule : Module() {
       }
     }
 
-    // Function("setWallpaper") { uri: String ->
-    //   try {
-    //     val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, Uri.parse(uri)))
+    Function("setWallpaper") { uri: String ->
+      try {
+        val context: Context = context
+        val wallpaperManager = WallpaperManager.getInstance(context)
+        val inputStream = context.contentResolver.openInputStream(Uri.parse(uri))
+        val bitmap = BitmapFactory.decodeStream(inputStream)
 
-    //     WallpaperManager.getInstance(context).setBitmap(bitmap)
-    //   } catch (e: Exception) {
-    //     "not-permitted"
-    //   }
-    // }
+        wallpaperManager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_LOCK)
+        wallpaperManager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_SYSTEM)
+      } catch (e: Exception) {
+        "not-permitted"
+      }
+    }
   }
 
   private val context

@@ -7,7 +7,7 @@ export type Application = {
   versionCode: number;
   firstInstallTime: string;
   lastUpdateTime: string;
-  icon: string;
+  icon?: string;
 }
 
 function returnResponse(result: any): any {
@@ -30,8 +30,13 @@ export function getSerialNumber(): string {
   return returnResponse(ExpoToopInfoModule.getSerialNumber());
 }
 
-export function getInstalledPackages(supressPackages: string[]): Application[] {
-  const items = returnResponse(ExpoToopInfoModule.getInstalledPackages());
+export interface GetInstalledPackagesData {
+  supressPackages?: string[]
+  getIcon?: boolean
+}
+
+export function getInstalledPackages({ supressPackages, getIcon }: GetInstalledPackagesData): Application[] {
+  const items = returnResponse(ExpoToopInfoModule.getInstalledPackages(getIcon));
 
   const applications = items.map((item: string) => {
     const [
@@ -51,11 +56,15 @@ export function getInstalledPackages(supressPackages: string[]): Application[] {
       versionName,
       firstInstallTime,
       lastUpdateTime,
-      icon: `data:image/png;base64,${icon}`
+      icon: icon ? `data:image/png;base64,${icon}` : ''
     }
-  }).filter((application: Application) => !supressPackages.some(packageName => packageName === application.packageName))
+  })
+  
+  if(!supressPackages) {
+    return applications
+  }
 
-  return applications
+  return applications.filter((application: Application) => !supressPackages.some(packageName => packageName === application.packageName))
 }
 
 export function sendActivityResultOk(): string {

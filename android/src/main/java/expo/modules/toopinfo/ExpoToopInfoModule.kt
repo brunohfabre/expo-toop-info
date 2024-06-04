@@ -58,7 +58,7 @@ class ExpoToopInfoModule : Module() {
       }
     }
 
-    Function("getInstalledPackages") {
+    Function("getInstalledPackages") { getIcon: Boolean ->
       try {
         val packageManager = getPackageManager()
 
@@ -74,37 +74,39 @@ class ExpoToopInfoModule : Module() {
 
           var icon = ""
 
-          val drawable: Drawable = packageManager.getApplicationIcon(item.activityInfo.packageName)
+          if(getIcon) {
+            val drawable: Drawable = packageManager.getApplicationIcon(item.activityInfo.packageName)
 
-          if(drawable is BitmapDrawable) {
-            val outputStream = ByteArrayOutputStream()
-            drawable.bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            if(drawable is BitmapDrawable) {
+              val outputStream = ByteArrayOutputStream()
+              drawable.bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
 
-            icon = Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
-          } else if (drawable is AdaptiveIconDrawable) {
-            val backgroundDr = drawable.background
-            val foregroundDr = drawable.foreground
+              icon = Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
+            } else if (drawable is AdaptiveIconDrawable) {
+              val backgroundDr = drawable.background
+              val foregroundDr = drawable.foreground
 
-            val drr = arrayOfNulls<Drawable>(2)
-            drr[0] = backgroundDr
-            drr[1] = foregroundDr
+              val drr = arrayOfNulls<Drawable>(2)
+              drr[0] = backgroundDr
+              drr[1] = foregroundDr
 
-            val layerDrawable = LayerDrawable(drr)
+              val layerDrawable = LayerDrawable(drr)
 
-            val width = layerDrawable.intrinsicWidth
-            val height = layerDrawable.intrinsicHeight
+              val width = layerDrawable.intrinsicWidth
+              val height = layerDrawable.intrinsicHeight
 
-            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+              val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
 
-            val canvas = Canvas(bitmap)
+              val canvas = Canvas(bitmap)
 
-            layerDrawable.setBounds(0, 0, canvas.width, canvas.height)
-            layerDrawable.draw(canvas)
+              layerDrawable.setBounds(0, 0, canvas.width, canvas.height)
+              layerDrawable.draw(canvas)
 
-            val outputStream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+              val outputStream = ByteArrayOutputStream()
+              bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
 
-            icon = Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
+              icon = Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
+            }
           }
 
           val application = applicationInfo.applicationInfo.loadLabel(packageManager).toString() + ";" + applicationInfo.packageName + ";" + applicationInfo.versionName + ";" + applicationInfo.longVersionCode.toString() + ";" + applicationInfo.firstInstallTime + ";" + applicationInfo.lastUpdateTime + ";" + icon

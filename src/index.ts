@@ -35,8 +35,8 @@ export interface GetInstalledPackagesData {
   getIcon?: boolean
 }
 
-export function getInstalledPackages({ supressPackages, getIcon = false }: GetInstalledPackagesData): Application[] {
-  const items = returnResponse(ExpoToopInfoModule.getInstalledPackages(getIcon));
+export function getInstalledPackages(data?: GetInstalledPackagesData): Application[] {
+  const items = returnResponse(ExpoToopInfoModule.getInstalledPackages(!!data?.getIcon));
 
   const applications = items.map((item: string) => {
     const [
@@ -60,11 +60,11 @@ export function getInstalledPackages({ supressPackages, getIcon = false }: GetIn
     }
   })
   
-  if(!supressPackages) {
+  if(!data?.supressPackages) {
     return applications
   }
 
-  return applications.filter((application: Application) => !supressPackages.some(packageName => packageName === application.packageName))
+  return applications.filter((application: Application) => !data.supressPackages?.some(packageName => packageName === application.packageName))
 }
 
 export function sendActivityResultOk(): string {

@@ -35,7 +35,7 @@ export interface GetInstalledPackagesData {
   getIcon?: boolean
 }
 
-export function getInstalledPackages({ supressPackages, getIcon }: GetInstalledPackagesData): Application[] {
+export function getInstalledPackages({ supressPackages, getIcon = false }: GetInstalledPackagesData): Application[] {
   const items = returnResponse(ExpoToopInfoModule.getInstalledPackages(getIcon));
 
   const applications = items.map((item: string) => {

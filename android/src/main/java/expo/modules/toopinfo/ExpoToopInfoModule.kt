@@ -1,7 +1,6 @@
 package expo.modules.toopinfo
 
 import android.os.Build
-import android.content.Intent
 import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -20,13 +19,25 @@ import android.graphics.drawable.LayerDrawable
 import android.app.WallpaperManager
 import android.graphics.ImageDecoder
 import android.graphics.BitmapFactory
+import android.widget.Toast
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.Bundle
+import android.content.BroadcastReceiver
+import java.lang.ref.WeakReference
 
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 
+internal const val PACKAGE_CHANGE_EVENT_NAME = "onPackageChange"
+
 class ExpoToopInfoModule : Module() {
   override fun definition() = ModuleDefinition {
     Name("ExpoToopInfo")
+
+    Events(
+      PACKAGE_CHANGE_EVENT_NAME
+    )
 
     Function("openedByDpc") {
       try {
@@ -195,6 +206,10 @@ class ExpoToopInfoModule : Module() {
         "not-permitted"
       }
     }
+
+    OnCreate {
+      registerBroadcastReceivers(context)
+    }
   }
 
   private val context
@@ -211,4 +226,51 @@ class ExpoToopInfoModule : Module() {
   private fun getDevicePolicyManager(): DevicePolicyManager {
     return context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
   }
+
+  private val broadcastReceivers = mutableListOf<BroadcastReceiver>()
+
+  private inline fun accessBroadcastReceivers(block: MutableList<BroadcastReceiver>.() -> Unit) {
+    synchronized(broadcastReceivers) {
+      block.invoke(broadcastReceivers)
+    }
+  }
+
+  private fun registerBroadcastReceivers(context: Context) {
+    accessBroadcastReceivers {
+      if (isNotEmpty()) {
+        return
+      }
+    }
+
+    val weakModule = WeakReference(this@ExpoToopInfoModule)
+    val emitEvent = { name: String, body: Bundle ->
+      try {
+        weakModule.get()?.sendEvent(name, body)
+      } catch (_: Throwable) {
+      }
+      Unit
+    }
+
+    val packageChangeReceiver = PackageChangeReceiver(emitEvent)
+
+    context.registerReceiver(
+      packageChangeReceiver, 
+      IntentFilter().apply {
+        addAction(Intent.ACTION_PACKAGE_CHANGED)
+      }
+    )
+
+    accessBroadcastReceivers {
+      add(packageChangeReceiver)
+    }
+  } 
+
+  private fun runregisterBroadcastReceivers(context: Context) {
+    accessBroadcastReceivers {
+      forEach {
+        context.unregisterReceiver(it)
+      }
+      clear()
+    }
+  } 
 }

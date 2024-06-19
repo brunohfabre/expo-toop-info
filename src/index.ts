@@ -1,3 +1,5 @@
+
+import type { Subscription } from "expo-modules-core";
 import ExpoToopInfoModule from "./ExpoToopInfoModule";
 
 export type Application = {
@@ -85,4 +87,10 @@ export function getDeviceId(): string {
 
 export function setWallpaper(uri: string): string {
   return returnResponse(ExpoToopInfoModule.setWallpaper(uri));
+}
+
+export function addPackageChangeListener(
+  listener: (event: any) => void
+): Subscription {
+  return ExpoToopInfoModule.addListener('onPackageChange', listener);
 }

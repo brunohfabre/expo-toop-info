@@ -60,7 +60,7 @@ export function getInstalledPackages(data?: GetInstalledPackagesData): Applicati
       lastUpdateTime,
       icon: icon ? `data:image/png;base64,${icon}` : ''
     }
-  })
+  }).filter((obj1, i, arr) => arr.findIndex(obj2 => (obj2.packageName === obj1.packageName) === i))
   
   if(!data?.supressPackages) {
     return applications

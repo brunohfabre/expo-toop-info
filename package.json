@@ -1,6 +1,6 @@
 {
   "name": "expo-toop-info",
-  "version": "0.3.24",
+  "version": "0.3.25",
   "description": "My new module",
   "main": "build/index.js",
   "types": "build/index.d.ts",

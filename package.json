@@ -1,6 +1,6 @@
 {
   "name": "expo-toop-info",
-  "version": "0.3.25",
+  "version": "0.3.26",
   "description": "My new module",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -28,8 +28,11 @@
   "author": "Bruno Fabre <bruno.hfabre@gmail.com> (https://github.com/brunohfabre)",
   "license": "MIT",
   "homepage": "https://github.com/brunohfabre/expo-toop-info#readme",
-  "dependencies": {},
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
   "devDependencies": {
+    "@types/lodash": "^4.17.5",
     "@types/react": "^18.0.25",
     "expo-module-scripts": "^3.4.1",
     "expo-modules-core": "^1.11.12"

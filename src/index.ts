@@ -1,5 +1,6 @@
-
 import type { Subscription } from "expo-modules-core";
+import { uniqBy } from 'lodash'
+
 import ExpoToopInfoModule from "./ExpoToopInfoModule";
 
 export type Application = {
@@ -40,7 +41,7 @@ export interface GetInstalledPackagesData {
 export function getInstalledPackages(data?: GetInstalledPackagesData): Application[] {
   const items = returnResponse(ExpoToopInfoModule.getInstalledPackages(!!data?.getIcon));
 
-  const applications = items.map((item: string) => {
+  const applications: Application[] = items.map((item: string) => {
     const [
       name,
       packageName,
@@ -60,13 +61,13 @@ export function getInstalledPackages(data?: GetInstalledPackagesData): Applicati
       lastUpdateTime,
       icon: icon ? `data:image/png;base64,${icon}` : ''
     }
-  }).filter((obj1, i, arr) => arr.findIndex(obj2 => (obj2.packageName === obj1.packageName) === i))
+  })
   
   if(!data?.supressPackages) {
-    return applications
+    return uniqBy(applications, 'packageName') 
   }
 
-  return applications.filter((application: Application) => !data.supressPackages?.some(packageName => packageName === application.packageName))
+  return uniqBy(applications, 'packageName').filter((application: Application) => !data.supressPackages?.some(packageName => packageName === application.packageName))
 }
 
 export function sendActivityResultOk(): string {
